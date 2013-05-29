@@ -79,6 +79,16 @@ var expand = function (c) {
     }
 };
 
+var add_left = function (term, c) {
+    if (typeof term === 'string') return [c, term];
+    return [add_left(term[0], c), term[1]];
+};
+
+var add_right = function (term, c) {
+    if (typeof c === 'string') return [term, c];
+    return [add_right(term, c[0]), c[1]];
+};
+
 // var d0 = [[['s','i'],'i'],[['s','i'],'i']]
 //   , d1 = expand(eval_once(d0))
 //   , d2 = expand(eval_once(d1))
@@ -127,12 +137,14 @@ $(function (){
             term = expand(eval_once(term));
         }
         else if (e.keyCode === 37) {
-            term = [next, term];
+            //term = [next, term];
+            term = add_left(term, next);
             next = generate(2);
         }
         else if (e.keyCode === 39) {
-            term = [term, next];
-            next = generate(2);
+            //term = [term, next];
+            term = add_right(term, next);
+            next = generate(Math.floor(Math.random() * 4) + 1);
         }
         $('#next').text(to_string(next));
         $('#term').text(to_string(term));
